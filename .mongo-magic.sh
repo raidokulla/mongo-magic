@@ -1,6 +1,6 @@
-# Install Mongo DB in Zone.ee servers. Not tested with other hosts.
+# Install Mongo DB at Zone.eu servers automatically.
 # Copy .mongo-magic.sh into your HOME directory (example: /data01/virt12345/)
-# Run script by "bash .mongo-magic.sh"
+# Run script from terminal by "bash .mongo-magic.sh"
 # Author: Raido K @ Vellex Digital
 # https://github.com/raidokulla
 
