@@ -70,21 +70,25 @@ cd "$MONGODB_DIR" || { echo "Failed to change directory!"; exit 1; }
 # GET MONGODB
 wget "https://fastdl.mongodb.org/linux/$MONGO_VERSION" || { echo "Download failed!"; exit 1; }
 tar -zxvf "$MONGO_VERSION" -C "$MONGODB_DIR"  # Extract directly to the MongoDB directory
-ln -s "$MONGODB_DIR/mongodb-linux-x86_64-rhel80-${version_choice}.0.0" "$MONGODB_DIR/mongodb-binary"
+
+# Correctly identify the extracted folder
+if [[ $version_choice == 1 ]]; then
+    EXTRACTED_DIR="mongodb-linux-x86_64-rhel80-6.0.0"
+elif [[ $version_choice == 2 ]]; then
+    EXTRACTED_DIR="mongodb-linux-x86_64-rhel80-7.0.0"
+fi
+
+# Create the symlink to the extracted directory
+ln -s "$MONGODB_DIR/$EXTRACTED_DIR" "$MONGODB_DIR/mongodb-binary"
+
+# CREATE DIRECTORIES FOR MONGOSH AND TOOLS
+mkdir -p "$MONGODB_DIR/mongosh" "$MONGODB_DIR/tools"
 
 # GET MONGOSH
-wget https://downloads.mongodb.com/compass/mongosh-1.5.2-linux-x64.tgz -O mongosh.tgz || { echo "Download failed!"; exit 1; }
-tar -zxvf mongosh.tgz
-echo 'export PATH=$PATH:$HOME/mongodb/mongosh-1.5.2-linux-x64/bin' >> "$HOME/.bash_profile"
-source "$HOME/.bash_profile"
-
-# CHECK FOR TOOLS UPDATES
-echo "Checking for MongoDB tools updates..."
-TOOL_VERSION="mongodb-database-tools-rhel80-x86_64-100.5.4.tgz"
-wget "https://fastdl.mongodb.org/tools/db/$TOOL_VERSION" -O tools.tgz || { echo "Download failed!"; exit 1; }
-tar -zxvf tools.tgz
-echo 'export PATH=$PATH:$HOME/mongodb/mongodb-database-tools-rhel80-x86_64-100.5.4/bin' >> "$HOME/.bash_profile"
-source "$HOME/.bash_profile"
+wget https://downloads.mongodb.com/compass/mongosh-1.5.2-linux-x64.tgz -O "$MONGODB_DIR/mongosh/mongosh.tgz" || { echo "Download failed!"; exit 1; }
+tar -zxvf "$MONGODB_DIR/mongosh/mongosh.tgz" -C "$MONGODB_DIR/mongosh" --strip-components=1
+echo 'export PATH=$PATH:$HOME/mongodb/mongosh/bin' >> "$HOME/.bash_profile"
+echo "Please restart your terminal or run 'source $HOME/.bash_profile' to update your PATH."
 
 # CREATE MONGO.CFG
 cat > "$MONGODB_DIR/mongo.cfg" << ENDOFFILE
@@ -195,6 +199,8 @@ echo "Shutting down MongoDB..."
 ./mongodb-binary/bin/mongod -f "$MONGODB_DIR/mongo.cfg" --shutdown
 
 # DO NEXT COMMENTS
-echo "Setup MongoDB as new PM2 app at Zone."
-echo "Virtuaalserverid -> Veebiserver -> PM2 protsessid (Node.js)"
-echo "Path for app: $MONGODB_DIR/${pm2_app_name}.pm2.json"
+echo "Setup MongoDB as new PM2 app at Zone.eu"
+echo "Webhosting -> PM2 and Node.js -> Add new application"
+echo "Path for the app: $MONGODB_DIR/${pm2_app_name}.pm2.json"
+echo "Please restart your terminal or run 'source $HOME/.bash_profile' to update your PATH to use mongosh."
+echo "MongoDB installation completed successfully."
