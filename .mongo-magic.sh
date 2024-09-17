@@ -70,7 +70,7 @@ cd "$MONGODB_DIR" || { echo "Failed to change directory!"; exit 1; }
 # GET MONGODB
 wget "https://fastdl.mongodb.org/linux/$MONGO_VERSION" || { echo "Download failed!"; exit 1; }
 tar -zxvf "$MONGO_VERSION" -C "$MONGODB_DIR"  # Extract directly to the MongoDB directory
-ln -s "$MONGODB_DIR/mongodb-linux-x86_64-rhel80-${version_choice}.0.0" "$MONGODB_DIR/mongodb-binary"w
+ln -s "$MONGODB_DIR/mongodb-linux-x86_64-rhel80-${version_choice}.0.0" "$MONGODB_DIR/mongodb-binary"
 
 # GET MONGOSH
 wget https://downloads.mongodb.com/compass/mongosh-1.5.2-linux-x64.tgz -O mongosh.tgz || { echo "Download failed!"; exit 1; }
