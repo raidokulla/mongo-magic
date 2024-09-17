@@ -8,8 +8,8 @@
 #
 # Download Instructions:
 # You can download this script directly from GitHub using:
-# - wget: wget https://raw.githubusercontent.com/raidokulla/mongo-magic/main/.mongo-magic.sh
-# - curl: curl -O https://raw.githubusercontent.com/raidokulla/mongo-magic/main/.mongo-magic.sh
+# - wget: wget https://raw.githubusercontent.com/raidokulla/mongo-magic/master/.mongo-magic.sh
+# - curl: curl -O https://raw.githubusercontent.com/raidokulla/mongo-magic/master/.mongo-magic.sh
 #
 # Features:
 # - Checks for an existing MongoDB instance and prevents conflicts.

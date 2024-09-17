@@ -19,12 +19,12 @@ You can download the script directly from GitHub using:
 
 - Using `wget`:
   ```bash
-  wget https://raw.githubusercontent.com/raidokulla/mongo-magic/main/.mongo-magic.sh
+  wget https://raw.githubusercontent.com/raidokulla/mongo-magic/master/.mongo-magic.sh
   ```
 
 - Using `curl`:
   ```bash
-  curl -O https://raw.githubusercontent.com/raidokulla/mongo-magic/main/.mongo-magic.sh
+  curl -O https://raw.githubusercontent.com/raidokulla/mongo-magic/master/.mongo-magic.sh
   ```
 
 ### Run the Script
