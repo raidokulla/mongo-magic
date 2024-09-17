@@ -163,7 +163,7 @@ case $memory_choice in
 esac
 
 # Ask user for PM2 app name
-read -p "${GREEN}Enter a name for the PM2 app: ${RESET}" pm2_app_name
+read -p "Enter a name for the PM2 app:" pm2_app_name
 
 # CREATE JSON FOR PM2
 echo "Creating MongoDB PM2 JSON..."
