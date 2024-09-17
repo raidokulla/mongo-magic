@@ -87,7 +87,7 @@ mkdir -p "$MONGODB_DIR/mongosh" "$MONGODB_DIR/tools"
 # GET MONGOSH
 wget https://downloads.mongodb.com/compass/mongosh-1.5.2-linux-x64.tgz -O "$MONGODB_DIR/mongosh/mongosh.tgz" || { echo "Download failed!"; exit 1; }
 tar -zxvf "$MONGODB_DIR/mongosh/mongosh.tgz" -C "$MONGODB_DIR/mongosh" --strip-components=1
-echo 'export PATH=$PATH:$HOME/mongodb/mongosh/bin' >> "$HOME/.bash_profile"
+echo 'export PATH=$PATH:$MONGODB_DIR/mongosh/bin' >> "$HOME/.bash_profile"
 echo "Updating PATH to include mongosh..."
 source $HOME/.bash_profile
 
@@ -169,7 +169,7 @@ echo "Waiting for MongoDB to start..."
 max_attempts=30  # Maximum number of attempts
 attempt=0
 
-while ! nc -z $USER.loopback.zonevs.eu 5679; do   
+while ! pgrep -x mongod > /dev/null; do   
     if [ "$attempt" -ge "$max_attempts" ]; then
         echo "MongoDB did not start in time. Exiting."
         exit 1
