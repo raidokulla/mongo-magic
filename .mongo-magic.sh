@@ -187,11 +187,12 @@ if ! command -v mongosh &> /dev/null; then
 fi
 
 # CREATE ADMIN DB USER
-echo "Creating new root user."
-read -p "Enter new username: " username
-read -sp "Enter new password: " password
+echo "Creating new root user in ADMIN database."
+read -p "Enter new ROOT username: " username
+read -sp "Enter new ROOT password: " password
 echo
 
+# Create the root user using mongosh
 mongosh $USER.loopback.zonevs.eu:5679/admin --eval "db.createUser({
     user: \"$username\",
     pwd: \"$password\",
@@ -203,23 +204,30 @@ echo "WARNING: It is recommended to create a new user with read/write permission
 read -p "Do you want to create a new user with limited permissions? (y/n): " create_user
 
 if [[ "$create_user" == "y" ]]; then
-    read -p "Enter new username for limited access: " new_username
-    read -sp "Enter password for new user: " new_password
+    read -p "Enter new USERNAME for LIMITED access: " new_username
+    read -sp "Enter new PASSWORD for LIMITED access: " new_password
+    read -p "Enter the name of the DATABASE for the LIMITED user: " db_name
     echo
-    mongosh $USER.loopback.zonevs.eu:5679/admin --eval "db.createUser({
+    
+    # Create the new user with limited access using the root user's credentials
+    mongosh --username "$username" --password "$password" $USER.loopback.zonevs.eu:5679/admin --eval "db.createUser({
         user: \"$new_username\",
         pwd: \"$new_password\",
-        roles: [{ role: \"readWrite\", db: \"my-database\" }]
+        roles: [{ role: \"readWrite\", db: \"$db_name\" }]
     })"
-    echo "New user created with read/write permissions."
+    echo "New user created in $db_name with read/write permissions."
 fi
 
-# CLOSE MONGO
-echo "Shutting down MongoDB..."
-./mongodb-binary/bin/mongod -f "$MONGODB_DIR/mongo.cfg" --shutdown
-
 # DO NEXT COMMENTS
-echo "Setup MongoDB as new PM2 app at Zone.eu"
+echo "MongoDB installation completed successfully."
+sleep 1
+echo "IMPORTANT: Setup MongoDB as new PM2 app at Zone.eu"
 echo "Webhosting -> PM2 and Node.js -> Add new application"
 echo "Path for the app: $MONGODB_DIR/${pm2_app_name}.pm2.json"
-echo "MongoDB installation completed successfully."
+echo "App name: $pm2_app_name"
+echo "Memory limit: $MEMORY"
+echo "Start the app and check the logs for any errors."
+
+# CLOSE MONGO USING PM2
+echo "Shutting down MongoDB using PM2..."
+pm2 stop "$pm2_app_name" || { echo "Failed to stop MongoDB!"; exit 1; }
