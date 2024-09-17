@@ -34,19 +34,19 @@ if pgrep -x "mongod" > /dev/null; then
     exit 1
 fi
 
-# Check if a MongoDB directory exists and back it up
+# Check if a MongoDB directory exists
 if [ -d "$MONGODB_DIR/db" ]; then
-    echo "Backing up existing MongoDB database..."
-    tar -czvf "$HOME/mongodb_backup_$(date +%Y%m%d_%H%M%S).tar.gz" "$MONGODB_DIR/db"
-    echo "Backup completed."
-    
-    # Ask user if they want a clean install
-    read -p "Do you want to proceed with a clean install (y/n)? " clean_install
-    if [[ "$clean_install" != "y" ]]; then
-        echo "Restoring backup..."
-        tar -xzvf "$HOME/mongodb_backup_$(date +%Y%m%d_%H%M%S).tar.gz" -C "$MONGODB_DIR/db"
-        echo "Backup restored."
+    echo "Existing MongoDB database found."
+    read -p "Do you want to back it up before overwriting? (y/n): " backup_choice
+
+    if [[ "$backup_choice" == "y" ]]; then
+        echo "Backing up existing MongoDB database..."
+        tar -czvf "$HOME/mongodb_backup_$(date +%Y%m%d_%H%M%S).tar.gz" "$MONGODB_DIR/db"
+        echo "Backup completed."
     fi
+
+    echo "Overwriting existing MongoDB database..."
+    rm -rf "$MONGODB_DIR/db/*"  # Clear existing database files
 fi
 
 # Ask user which MongoDB version to install
@@ -64,9 +64,13 @@ esac
 # CREATE REQUIRED DIRS
 mkdir -p "$MONGODB_DIR/log" "$MONGODB_DIR/run" "$MONGODB_DIR/db"
 
+# Change to MongoDB directory
+cd "$MONGODB_DIR" || { echo "Failed to change directory!"; exit 1; }
+
 # GET MONGODB
-wget "https://fastdl.mongodb.org/linux/$MONGO_VERSION" -O download.tgz || { echo "Download failed!"; exit 1; }
-tar -zxvf download.tgz && ln -s "mongodb-linux-x86_64-rhel80-${version_choice}.0.0" "$MONGODB_DIR/mongodb-binary"
+wget "https://fastdl.mongodb.org/linux/$MONGO_VERSION" || { echo "Download failed!"; exit 1; }
+tar -zxvf "$MONGO_VERSION" -C "$MONGODB_DIR"  # Extract directly to the MongoDB directory
+ln -s "$MONGODB_DIR/mongodb-linux-x86_64-rhel80-${version_choice}.0.0" "$MONGODB_DIR/mongodb-binary"w
 
 # GET MONGOSH
 wget https://downloads.mongodb.com/compass/mongosh-1.5.2-linux-x64.tgz -O mongosh.tgz || { echo "Download failed!"; exit 1; }
