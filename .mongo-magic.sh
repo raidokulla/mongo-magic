@@ -88,7 +88,8 @@ mkdir -p "$MONGODB_DIR/mongosh" "$MONGODB_DIR/tools"
 wget https://downloads.mongodb.com/compass/mongosh-1.5.2-linux-x64.tgz -O "$MONGODB_DIR/mongosh/mongosh.tgz" || { echo "Download failed!"; exit 1; }
 tar -zxvf "$MONGODB_DIR/mongosh/mongosh.tgz" -C "$MONGODB_DIR/mongosh" --strip-components=1
 echo 'export PATH=$PATH:$HOME/mongodb/mongosh/bin' >> "$HOME/.bash_profile"
-echo "Please restart your terminal or run 'source $HOME/.bash_profile' to update your PATH."
+echo "Updating PATH to include mongosh..."
+source $HOME/.bash_profile
 
 # CREATE MONGO.CFG
 cat > "$MONGODB_DIR/mongo.cfg" << ENDOFFILE
@@ -162,15 +163,34 @@ echo "MongoDB PM2 JSON created."
 # START MONGODB FIRST TIME
 echo "Starting MongoDB..."
 pm2 start "$MONGODB_DIR/${pm2_app_name}.pm2.json" || { echo "Failed to start MongoDB!"; exit 1; }
-echo "MongoDB started successfully."
+
+# WAIT FOR MONGODB TO START
+echo "Waiting for MongoDB to start..."
+max_attempts=30  # Maximum number of attempts
+attempt=0
+
+while ! nc -z $USER.loopback.zonevs.eu 5679; do   
+    if [ "$attempt" -ge "$max_attempts" ]; then
+        echo "MongoDB did not start in time. Exiting."
+        exit 1
+    fi
+    sleep 1  # Wait for 1 second before checking again
+    attempt=$((attempt + 1))
+done
+
+echo "MongoDB is up and running."
+
+# CHECK IF MONGOSH IS INSTALLED
+if ! command -v mongosh &> /dev/null; then
+    echo "Mongosh is not installed. Please install it manually."
+    exit 1
+fi
 
 # CREATE ADMIN DB USER
 echo "Creating new root user."
 read -p "Enter new username: " username
 read -sp "Enter new password: " password
 echo
-
-./mongodb-binary/bin/mongod -f "$MONGODB_DIR/mongo.cfg" --fork
 
 mongosh $USER.loopback.zonevs.eu:5679/admin --eval "db.createUser({
     user: \"$username\",
@@ -202,5 +222,4 @@ echo "Shutting down MongoDB..."
 echo "Setup MongoDB as new PM2 app at Zone.eu"
 echo "Webhosting -> PM2 and Node.js -> Add new application"
 echo "Path for the app: $MONGODB_DIR/${pm2_app_name}.pm2.json"
-echo "Please restart your terminal or run 'source $HOME/.bash_profile' to update your PATH to use mongosh."
 echo "MongoDB installation completed successfully."
