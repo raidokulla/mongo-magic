@@ -11,6 +11,9 @@ Mongo Magic is a bash script designed to automate the installation and setup of 
 - Enables specification of a custom PM2 app name.
 - Automatically checks for and installs compatible MongoDB tools.
 - Prompts for the creation of a new user with root access and an optional additional user with read/write permissions.
+- Prompts the user to name the new database with limited access.
+- Provides instructions for setting up MongoDB as a new PM2 app on Zone.eu servers.
+- Adds the mongosh binary to the PATH for easy access.
 
 ## Installation
 
