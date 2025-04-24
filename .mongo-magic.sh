@@ -129,8 +129,6 @@ systemLog:
     logAppend: true
 storage:
     dbPath: "$MONGODB_DIR/db/"
-    journal:
-        enabled: true
     directoryPerDB: true
     engine: wiredTiger
     wiredTiger:
