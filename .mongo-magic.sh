@@ -71,8 +71,8 @@ echo "2) 7.0"
 read -p "Enter choice (1 or 2): " version_choice
 
 case $version_choice in
-    1) MONGO_VERSION="mongodb-linux-x86_64-rhel80-6.0.0.tgz";;
-    2) MONGO_VERSION="mongodb-linux-x86_64-rhel80-7.0.0.tgz";;
+    1) MONGO_VERSION="mongodb-linux-x86_64-rhel90-6.0.22.tgz";;
+    2) MONGO_VERSION="mongodb-linux-x86_64-rhel90-7.0.19.tgz";;
     *) echo -e "${RED}Invalid choice. Exiting.${RESET}"; exit 1;;
 esac
 
