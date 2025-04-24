@@ -88,9 +88,9 @@ tar -zxvf "$MONGO_VERSION" -C "$MONGODB_DIR"  # Extract directly to the MongoDB 
 
 # Correctly identify the extracted folder
 if [[ $version_choice == 1 ]]; then
-    EXTRACTED_DIR="mongodb-linux-x86_64-rhel80-6.0.0"
+    EXTRACTED_DIR="mongodb-linux-x86_64-rhel90-6.0.22"
 elif [[ $version_choice == 2 ]]; then
-    EXTRACTED_DIR="mongodb-linux-x86_64-rhel80-7.0.0"
+    EXTRACTED_DIR="mongodb-linux-x86_64-rhel90-7.0.19"
 fi
 
 # Create the symlink to the extracted directory
